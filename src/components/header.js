@@ -33,7 +33,7 @@ const Header = () => {
                         </NavLink>
                         
                         <button onClick={handleLogout} className="main-nav-item" aria-label="Sign out">
-                        <i class="fa fa-sign-out"></i>
+                        <i className="fa fa-sign-out"></i>
                             Sign Out
                         </button>
                     </>

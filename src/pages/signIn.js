@@ -15,6 +15,7 @@ const SignIn = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true); // Start loading state
         try {
             const response = await ApiService.login(email, password);
             
@@ -22,7 +23,7 @@ const SignIn = () => {
     
             if (response.status === 200 && response.body && response.body.token) {
                 const { token } = response.body;
-                
+    
                 // Appel pour obtenir les données utilisateur
                 const profileResponse = await ApiService.getProfile(token);
                 const user = profileResponse.body; // Assure-toi que c'est correct
@@ -40,8 +41,11 @@ const SignIn = () => {
             console.error('Error during login:', err);
             setError('Échec de la connexion, veuillez vérifier vos informations.');
             dispatch(loginFailure());
+        } finally {
+            setLoading(false); // End loading state
         }
     };
+    
     
 
     return (
