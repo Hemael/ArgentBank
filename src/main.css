@@ -307,3 +307,15 @@ html {
     font: inherit;
     cursor: pointer;
   }
+
+  #first-name, #last-name {
+    height: 30px;
+    margin: 10px;
+  }
+
+  .save-button, .cancel-button {
+    height: 30px;
+    width: 100px;
+    background-color: white;
+    margin: 10px;
+  }

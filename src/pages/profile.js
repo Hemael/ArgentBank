@@ -7,6 +7,9 @@ const Profile = () => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [editing, setEditing] = useState(false);
+    const [newFirstName, setNewFirstName] = useState('');
+    const [newLastName, setNewLastName] = useState('');
     const token = useSelector((state) => state.auth.token); // Récupère le token depuis Redux
 
     useEffect(() => {
@@ -14,6 +17,8 @@ const Profile = () => {
             try {
                 const response = await ApiService.getProfile(token);
                 setUserData(response.body); // Adapte ceci en fonction du format de la réponse API
+                setNewFirstName(response.body.firstName); // Initialiser les champs d'édition avec les données existantes
+                setNewLastName(response.body.lastName);
                 setLoading(false);
             } catch (error) {
                 setError('Erreur lors de la récupération des données utilisateur');
@@ -23,6 +28,26 @@ const Profile = () => {
 
         fetchUserData();
     }, [token]);
+
+    const handleEditClick = () => {
+        setEditing(true);
+    };
+
+    const handleCancelClick = () => {
+        setEditing(false);
+        setNewFirstName(userData.firstName); // Réinitialiser les champs d'édition
+        setNewLastName(userData.lastName);
+    };
+
+    const handleSaveClick = async () => {
+        try {
+            await ApiService.updateProfile(token, { firstName: newFirstName, lastName: newLastName });
+            setUserData({ ...userData, firstName: newFirstName, lastName: newLastName });
+            setEditing(false);
+        } catch (error) {
+            setError('Erreur lors de la mise à jour des données utilisateur');
+        }
+    };
 
     if (loading) {
         return <div>Loading...</div>; // Affiche un message de chargement en attendant les données
@@ -39,10 +64,37 @@ const Profile = () => {
     return (
         <main className="main bg-dark">
             <div className="header">
-                <h1>Welcome back<br />{userData.firstName} {userData.lastName}!</h1> {/* Affiche le prénom et nom de l'utilisateur */}
-                <button className="edit-button">Edit Name</button>
+                <h1>Welcome back<br />{userData.firstName} {userData.lastName}!</h1>
+                {!editing ? (
+                    <button className="edit-button" onClick={handleEditClick}>Edit Name</button>
+                ) : (
+                    <>
+                        <div className="edit-form">
+                            <label htmlFor="first-name"></label>
+                            <input 
+                                type="text" 
+                                id="first-name" 
+                                
+                                onChange={(e) => setNewFirstName(e.target.value)} 
+                                placeholder={userData.firstName} // Affiche l'ancien prénom en grisé
+                            />
+                            <label htmlFor="last-name"></label>
+                            <input 
+                                type="text" 
+                                id="last-name" 
+                                onChange={(e) => setNewLastName(e.target.value)} 
+                                placeholder={userData.lastName} // Affiche l'ancien nom en grisé
+                            />
+                            <div>
+                            <button className="save-button" onClick={handleSaveClick}>Save</button>
+                            <button className="cancel-button" onClick={handleCancelClick}>Cancel</button>
+                            </div>
+
+                        </div>
+                    </>
+                )}
             </div>
-            <h2 className="sr-only">Accounts</h2>
+
             <section className="account">
                 <div className="account-content-wrapper">
                     <h3 className="account-title">Argent Bank Checking (x8349)</h3>
