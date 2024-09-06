@@ -5,6 +5,8 @@ import "../main.css";
 
 const Profile = () => {
     const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const token = useSelector((state) => state.auth.token); // Récupère le token depuis Redux
 
     useEffect(() => {
@@ -12,17 +14,26 @@ const Profile = () => {
             try {
                 const response = await ApiService.getProfile(token);
                 setUserData(response.body); // Adapte ceci en fonction du format de la réponse API
-
+                setLoading(false);
             } catch (error) {
-                console.error('Erreur lors de la récupération des données utilisateur', error);
+                setError('Erreur lors de la récupération des données utilisateur');
+                setLoading(false);
             }
         };
 
         fetchUserData();
     }, [token]);
 
-    if (!userData) {
+    if (loading) {
         return <div>Loading...</div>; // Affiche un message de chargement en attendant les données
+    }
+
+    if (error) {
+        return <div>{error}</div>; // Affiche l'erreur si elle se produit
+    }
+
+    if (!userData) {
+        return <div>No user data available</div>; // Affiche un message si aucune donnée n'est disponible
     }
 
     return (

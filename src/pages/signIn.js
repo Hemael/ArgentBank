@@ -1,49 +1,47 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { loginSuccess, loginFailure } from '../service/authSlice'; // Assure-toi que ces actions existent
+import { loginSuccess, loginFailure } from '../service/authSlice';
 import ApiService from '../service/apiService';
-import { useNavigate } from 'react-router-dom'; // Pour la navigation
-
+import { useNavigate } from 'react-router-dom'; 
 import "../main.css";
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false); // Ajout d'un état de chargement
     const dispatch = useDispatch();
-    const navigate = useNavigate(); // Pour rediriger après connexion
+    const navigate = useNavigate(); 
 
-
-const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        const response = await ApiService.login(email, password);
-        
-        if (response.status === 200 && response.body && response.body.token) {
-            const { token, user } = response.body; // Assure-toi que `user` contient les données utilisateur
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await ApiService.login(email, password);
             
-            console.log('User Data:', user); // Log pour vérifier les données utilisateur
-
-            // Dispatch l'action loginSuccess avec les données utilisateur
-            dispatch(loginSuccess({ user, token }));
-
-            // Optionnel : stocke le token dans le localStorage
-            localStorage.setItem('authToken', token);
-
-            // Redirige vers la page de profil
-            navigate('/profile');
-        } else {
-            throw new Error('Réponse de l\'API invalide');
-        }
-
-    } catch (err) {
-        setError('Échec de la connexion, veuillez vérifier vos informations.');
-        dispatch(loginFailure());
-    }
-};
-
-
+            console.log('API Login Data:', response);
     
+            if (response.status === 200 && response.body && response.body.token) {
+                const { token } = response.body;
+                
+                // Appel pour obtenir les données utilisateur
+                const profileResponse = await ApiService.getProfile(token);
+                const user = profileResponse.body; // Assure-toi que c'est correct
+                
+                console.log('User Data:', user); // Assure-toi que les données utilisateur sont correctes
+    
+                dispatch(loginSuccess({ user, token }));
+                localStorage.setItem('authToken', token);
+                navigate('/profile');
+            } else {
+                throw new Error('Réponse de l\'API invalide');
+            }
+    
+        } catch (err) {
+            console.error('Error during login:', err);
+            setError('Échec de la connexion, veuillez vérifier vos informations.');
+            dispatch(loginFailure());
+        }
+    };
     
 
     return (
@@ -79,8 +77,11 @@ const handleSubmit = async (e) => {
                     </div>
 
                     {error && <p style={{ color: 'red' }}>{error}</p>}
+                    {loading && <p>Loading...</p>} {/* Affiche un message de chargement */}
 
-                    <button type="submit" className="sign-in-button">Sign In</button>
+                    <button type="submit" className="sign-in-button" disabled={loading}>
+                        {loading ? 'Signing In...' : 'Sign In'}
+                    </button>
                 </form>
             </section>
         </main>

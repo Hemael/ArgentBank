@@ -11,6 +11,7 @@ const ApiService = {
             body: JSON.stringify({ email, password }),
         });
 
+
         if (!response.ok) {
             throw new Error('Échec de la connexion');
         }

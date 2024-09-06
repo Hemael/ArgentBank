@@ -7,10 +7,11 @@ import { logout } from '../service/authSlice';
 const Header = () => {
     const dispatch = useDispatch();
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
-    const userData = useSelector(state => state.auth.user); // Récupérer les données utilisateur depuis Redux
+    const userData = useSelector(state => state.auth.user);
 
-    console.log('User Data in Header:', userData); // Log pour vérifier les données utilisateur
-    
+    console.log('Is Authenticated:', isAuthenticated);
+    console.log('User Data in Header:', userData);
+
     const handleLogout = () => {
         localStorage.removeItem('authToken');
         dispatch(logout());
@@ -28,9 +29,13 @@ const Header = () => {
                     <>
                         <NavLink to='/profile' className="main-nav-item">
                             <i className="fa fa-user-circle"></i>
-                            {userData ? `${userData.firstName} ${userData.lastName}` : 'User'}
+                            {userData ? `${userData.firstName} ` : 'User'}
                         </NavLink>
-                        <button onClick={handleLogout} className="main-nav-item">Sign Out</button>
+                        
+                        <button onClick={handleLogout} className="main-nav-item" aria-label="Sign out">
+                        <i class="fa fa-sign-out"></i>
+                            Sign Out
+                        </button>
                     </>
                 ) : (
                     <NavLink to='/signin' className="main-nav-item">
