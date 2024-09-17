@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ApiService from '../service/apiService';
 import "../main.css";
+import { updateProfile } from '../service/authSlice';
 
 const Profile = () => {
+    const dispatch = useDispatch()
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -42,6 +44,7 @@ const Profile = () => {
     const handleSaveClick = async () => {
         try {
             await ApiService.updateProfile(token, { firstName: newFirstName, lastName: newLastName });
+            dispatch(updateProfile({firstName: newFirstName, lastName: newLastName}))
             setUserData({ ...userData, firstName: newFirstName, lastName: newLastName });
             setEditing(false);
         } catch (error) {
