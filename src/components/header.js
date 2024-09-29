@@ -12,7 +12,6 @@ const Header = () => {
     console.log('User Data in Header:', userData);
 
     const handleLogout = () => {
-        localStorage.removeItem('authToken');
         dispatch(logout());
     };
 

@@ -112,25 +112,35 @@ paths:
           description: Invalid Fields
         '500':
           description: Internal Server Error
-
-  /transactions:
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+                    
+  /account/{accountId}/transactions:
     get:
       security:
         - Bearer: []
       tags:
         - Transactions Module
-      summary: Get all transactions for the current month
-      description: Retrieves all transactions for the authenticated user, grouped by account.
+      summary: Get all transactions for a specific account for the current month
+      description: Retrieves all transactions for the authenticated user, filtered by the provided accountId.
       parameters:
         - in: header
           name: Authorization
           description: Bearer JWT token
           required: true
           type: string
-        - in: query
+        - in: path
           name: accountId
-          description: Optional parameter to filter transactions by a specific account
-          required: false
+          description: ID of the account to retrieve transactions for 
+          required: true
           type: string
       produces:
         - application/json
@@ -139,10 +149,17 @@ paths:
           description: Transactions retrieved successfully
           schema:
             $ref: '#/definitions/TransactionsResponse'
+        '401':
+          description: Invalid token
+        '403':
+          description: Invalid UserID found in token
         '404':
-          description: No transactions found
+          description: No transactions found for this accountId
         '500':
           description: Internal Server Error
+
+
+        
 
   /transactions/{transactionId}:
     get:
@@ -170,6 +187,10 @@ paths:
           description: Transaction details retrieved successfully
           schema:
             $ref: '#/definitions/TransactionDetail'
+        '401':
+          description: Invalid token
+        '403':
+          description: Invalid UserID found in token
         '404':
           description: Transaction not found
         '500':
@@ -206,6 +227,10 @@ paths:
           description: Transaction updated successfully
           schema:
             $ref: '#/definitions/ApiResponse'
+        '401':
+          description: Invalid token
+        '403':
+          description: Invalid UserID found in token
         '404':
           description: Transaction not found
         '500':

@@ -5,6 +5,7 @@ const authSlice = createSlice({
     name: 'auth',
     initialState: {
         user: null,
+        email:null,
         token: null,
         isAuthenticated: false,
         error: null,
@@ -16,6 +17,12 @@ const authSlice = createSlice({
             state.user = action.payload.user; // Assure-toi que `user` est bien défini ici
             state.token = action.payload.token;
             state.isAuthenticated = true;
+        },
+        rememberEmail: (state, action) => {
+            state.email = action.payload;
+        },
+        forgetEmail: (state) => {
+            state.email = null;
         },
         loginFailure: (state) => {
             state.error = 'Erreur lors de la connexion';
@@ -33,5 +40,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { loginSuccess, loginFailure, logout, updateProfile } = authSlice.actions;
+export const { loginSuccess, loginFailure, logout, updateProfile, rememberEmail, forgetEmail } = authSlice.actions;
 export default authSlice.reducer;

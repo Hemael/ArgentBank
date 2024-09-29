@@ -1,17 +1,27 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { loginSuccess, loginFailure } from '../service/authSlice';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, loginFailure, rememberEmail, forgetEmail } from '../service/authSlice';
 import ApiService from '../service/apiService';
 import { useNavigate } from 'react-router-dom'; 
 import "../main.css";
 
 const SignIn = () => {
+    const savedEmail = useSelector((state) => state.auth.email);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false); // Ajout d'un état de chargement
+    const [rememberMe, setRememberMe] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate(); 
+    useEffect(() => {
+        
+        if (savedEmail){
+            setEmail(savedEmail);
+            setRememberMe(true);
+        }
+
+    },[savedEmail]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,7 +41,13 @@ const SignIn = () => {
                 console.log('User Data:', user); // Assure-toi que les données utilisateur sont correctes
     
                 dispatch(loginSuccess({ user, token }));
-                localStorage.setItem('authToken', token);
+
+                if (rememberMe) {
+                    dispatch(rememberEmail(email))
+                }
+                else {
+                    dispatch(forgetEmail())
+                }
                 navigate('/profile');
             } else {
                 throw new Error('Réponse de l\'API invalide');
@@ -76,7 +92,11 @@ const SignIn = () => {
                         />
                     </div>
                     <div className="input-remember">
-                        <input type="checkbox" id="remember-me" />
+                        <input
+                         type="checkbox" 
+                         id="remember-me" 
+                         checked={rememberMe}
+                         onChange={(e) => setRememberMe(e.target.checked)} />
                         <label htmlFor="remember-me">Remember me</label>
                     </div>
 
