@@ -12,9 +12,7 @@ const authSlice = createSlice({
     },
     reducers: {
         loginSuccess: (state, action) => {
-            console.log('Login Success Action Payload:', action.payload); // Vérifie les données envoyées avec l'action
-
-            state.user = action.payload.user; // Assure-toi que `user` est bien défini ici
+            state.user = action.payload.user; 
             state.token = action.payload.token;
             state.isAuthenticated = true;
         },

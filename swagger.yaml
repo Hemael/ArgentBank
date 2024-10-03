@@ -124,7 +124,7 @@ paths:
           
                     
   /account/{accountId}/transactions:
-    get:
+    post:
       security:
         - Bearer: []
       tags:
@@ -162,7 +162,7 @@ paths:
         
 
   /transactions/{transactionId}:
-    get:
+    post:
       security:
         - Bearer: []
       tags:
@@ -196,7 +196,7 @@ paths:
         '500':
           description: Internal Server Error
 
-    put:
+    patch:
       security:
         - Bearer: []
       tags:

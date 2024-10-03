@@ -8,8 +8,7 @@ const Header = () => {
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
     const userData = useSelector(state => state.auth.user);
 
-    console.log('Is Authenticated:', isAuthenticated);
-    console.log('User Data in Header:', userData);
+
 
     const handleLogout = () => {
         dispatch(logout());

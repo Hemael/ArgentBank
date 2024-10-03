@@ -18,7 +18,7 @@ const Profile = () => {
         const fetchUserData = async () => {
             try {
                 const response = await ApiService.getProfile(token);
-                setUserData(response.body); // Adapte ceci en fonction du format de la réponse API
+                setUserData(response.body); // Adapter ceci en fonction du format de la réponse API
                 setNewFirstName(response.body.firstName); // Initialiser les champs d'édition avec les données existantes
                 setNewLastName(response.body.lastName);
                 setLoading(false);

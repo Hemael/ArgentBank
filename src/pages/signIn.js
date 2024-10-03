@@ -29,16 +29,13 @@ const SignIn = () => {
         try {
             const response = await ApiService.login(email, password);
             
-            console.log('API Login Data:', response);
     
             if (response.status === 200 && response.body && response.body.token) {
                 const { token } = response.body;
     
                 // Appel pour obtenir les données utilisateur
                 const profileResponse = await ApiService.getProfile(token);
-                const user = profileResponse.body; // Assure-toi que c'est correct
-                
-                console.log('User Data:', user); // Assure-toi que les données utilisateur sont correctes
+                const user = profileResponse.body; 
     
                 dispatch(loginSuccess({ user, token }));
 
@@ -54,7 +51,6 @@ const SignIn = () => {
             }
     
         } catch (err) {
-            console.error('Error during login:', err);
             setError('Échec de la connexion, veuillez vérifier vos informations.');
             dispatch(loginFailure());
         } finally {
